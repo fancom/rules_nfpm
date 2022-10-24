@@ -1,4 +1,5 @@
 load("@io_bazel_rules_go//go:def.bzl", "nogo")
+load("@bazel_gazelle//:def.bzl", "gazelle")
 
 nogo(
     name = "rules_nfpm_nogo",
@@ -16,4 +17,16 @@ filegroup(
         "//nfpm/internal:package-contents",
     ],
     visibility = ["//:__subpackages__"],
+)
+
+gazelle(name = "gazelle")
+
+gazelle(
+    name = "gazelle-update-repos",
+    args = [
+        "-from_file=go/go.mod",
+        "-to_macro=nfpm/go_repositories.bzl%_rules_nfpm_go_repositories",
+        "-prune",
+    ],
+    command = "update-repos",
 )
