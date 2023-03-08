@@ -8,6 +8,9 @@ go_library(
     deps = [
         "//go/internal/cmd/nfpmwrapper",
         "@com_github_alecthomas_kong//:kong",
+        "@com_github_pkg_errors//:errors",
+        "@com_github_cavaliergopher_cpio//:cpio",
+        "@com_github_goreleaser_fileglob//:fileglob"
     ],
 )
 
