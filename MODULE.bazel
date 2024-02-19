@@ -19,6 +19,8 @@ bazel_dep(name = "platforms", version = "0.0.5")
 
 buildtools = use_extension("//nfpm/internal:buildtools.bzl", "buildtools")
 use_repo(buildtools, "com_github_bazelbuild_buildtools")
+nfpm = use_extension("//nfpm:nfpm.bzl", "nfpm")
+use_repo(nfpm, "com_github_goreleaser_nfpm_v2")
 go_deps = use_extension("@bazel_gazelle//:extensions.bzl", "go_deps")
 go_deps.from_file(go_mod = "//:go.mod")
 use_repo(
@@ -28,15 +30,27 @@ use_repo(
     "com_github_pkg_errors",
     "com_github_alecthomas_kong",
     "com_github_google_go_cmp",
+    "in_gopkg_yaml_v3",
+    "com_github_ulikunitz_xz",
+    "com_github_masterminds_semver_v3",
+    "com_github_goreleaser_chglog",
+    "com_github_aleksi_pointer",
+    "com_github_klauspost_compress",
+    "com_github_google_rpmpack",
+    "cat_dario_mergo",
+    "com_github_blakesmith_ar",
+    "org_golang_x_exp",
+    "com_github_protonmail_go_crypto",
+    "com_github_goreleaser_fileglob"
 )
 bazel_dep(name = "circl", version = "1.3.7")
-bazel_dep(name = "com_github_goreleaser_nfpm_v2", version = "2.35.3")
-git_override(
-    module_name = "com_github_goreleaser_nfpm_v2", 
-    remote = "https://github.com/goreleaser/nfpm", 
-    commit = "5ace4da2fd3162383a16218e2ef405dc2676bdfc",
-    patches = [
-        "//nfpm:nfpm.patch"
-    ],
-    patch_strip = 1,
-)
+# bazel_dep(name = "com_github_goreleaser_nfpm_v2", version = "2.35.3")
+# git_override(
+#     module_name = "com_github_goreleaser_nfpm_v2", 
+#     remote = "https://github.com/goreleaser/nfpm", 
+#     commit = "5ace4da2fd3162383a16218e2ef405dc2676bdfc",
+#     patches = [
+#         "//nfpm:nfpm.patch"
+#     ],
+#     patch_strip = 1,
+# )
