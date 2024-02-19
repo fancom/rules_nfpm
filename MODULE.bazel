@@ -20,7 +20,7 @@ bazel_dep(name = "platforms", version = "0.0.5")
 buildtools = use_extension("//nfpm/internal:buildtools.bzl", "buildtools")
 use_repo(buildtools, "com_github_bazelbuild_buildtools")
 # nfpm = use_extension("//nfpm:nfpm.bzl", "nfpm")
-#use_repo(nfpm, "com_github_goreleaser_nfpm_v2")
+# use_repo(nfpm, "com_github_goreleaser_nfpm_v2")
 go_deps = use_extension("@bazel_gazelle//:extensions.bzl", "go_deps")
 go_deps.from_file(go_mod = "//:go.mod")
 use_repo(
@@ -31,4 +31,11 @@ use_repo(
     "com_github_alecthomas_kong",
     "com_github_google_go_cmp",
     "com_github_goreleaser_nfpm_v2",
+)
+go_deps.module_override(
+    path = "github.com/goreleaser/nfpm/v2",
+    patches = [
+        "@com_github_fancom_rules_nfpm//nfpm:nfpm.patch"
+    ],
+    patch_strip = 1,
 )

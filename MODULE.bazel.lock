@@ -1,6 +1,6 @@
 {
   "lockFileVersion": 3,
-  "moduleFileHash": "d15880e9b67fbeed5b39391647745504570597525c490eece18a3db1b5ca2d92",
+  "moduleFileHash": "1a02af1d12852b06a4f403f6e7fe1683e250482d3fe440a1a4905306084e782b",
   "flags": {
     "cmdRegistries": [
       "https://bcr.bazel.build/"
@@ -70,6 +70,22 @@
                 "file": "@@//:MODULE.bazel",
                 "line": 25,
                 "column": 18
+              }
+            },
+            {
+              "tagName": "module_override",
+              "attributeValues": {
+                "path": "github.com/goreleaser/nfpm/v2",
+                "patches": [
+                  "@com_github_fancom_rules_nfpm//nfpm:nfpm.patch"
+                ],
+                "patch_strip": 1
+              },
+              "devDependency": false,
+              "location": {
+                "file": "@@//:MODULE.bazel",
+                "line": 35,
+                "column": 24
               }
             }
           ],
@@ -2700,8 +2716,12 @@
               "build_directives": [],
               "build_file_generation": "auto",
               "build_extra_args": [],
-              "patches": [],
-              "patch_args": [],
+              "patches": [
+                "@@//nfpm:nfpm.patch"
+              ],
+              "patch_args": [
+                "-p1"
+              ],
               "sum": "h1:nL7sXwsMLsc+NWE4Eddev+ZZomRaucT0WSnWkLwuxBM=",
               "replace": "",
               "version": "v2.26.0"
