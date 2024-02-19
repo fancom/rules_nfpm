@@ -25,3 +25,6 @@ rules_nfpm_internal_dependencies()
 load("//nfpm/internal:setup.bzl", "rules_nfpm_internal_setup")
 
 rules_nfpm_internal_setup()
+load("@stardoc_maven//:defs.bzl", stardoc_pinned_maven_install = "pinned_maven_install")
+
+stardoc_pinned_maven_install()
