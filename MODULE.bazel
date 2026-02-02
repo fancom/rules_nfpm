@@ -8,6 +8,7 @@ module(
     name = "rules_nfpm",
     repo_name = "com_github_fancom_rules_nfpm",
 )
+bazel_dep(name = "rules_shell", version = "0.6.1")
 bazel_dep(name = "bazel_skylib", version = "1.4.2")
 bazel_dep(name = "rules_go", version = "0.45.1", repo_name = "io_bazel_rules_go")
 bazel_dep(name = "gazelle", version = "0.35.0", repo_name = "bazel_gazelle")

@@ -1,5 +1,6 @@
 load("@bazel_gazelle//:def.bzl", "gazelle")
 load("@com_github_bazelbuild_buildtools//buildifier:def.bzl", "buildifier")
+load("@rules_shell//shell:sh_binary.bzl", "sh_binary")
 
 #
 # Gazelle scripts
