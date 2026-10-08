@@ -110,16 +110,16 @@ def _inspect_actions_signing_test_impl(ctx):
     
     # Check that signing flags are in the arguments
     got_args = pkg_action.argv
-    asserts.true(env, "--rpm-signing-key" in got_args, "Expected --rpm-signing-key in args")
-    asserts.true(env, "--rpm-signing-passphrase" in got_args, "Expected --rpm-signing-passphrase in args")
+    asserts.true(env, "--rpm-sign-key" in got_args, "Expected --rpm-sign-key in args")
+    asserts.true(env, "--rpm-sign-password" in got_args, "Expected --rpm-sign-password in args")
     
     return analysistest.end(env)
 
 inspect_actions_signing_test = analysistest.make(
     _inspect_actions_signing_test_impl,
     config_settings = {
-        str(Label("//nfpm:rpm_signing_key")): "dummy.key",
-        str(Label("//nfpm:rpm_signing_passphrase")): "dummy",
+        str(Label("//nfpm:rpm_sign_key")): "dummy.key",
+        str(Label("//nfpm:rpm_sign_password")): "dummy",
     },
 )
 
@@ -136,8 +136,6 @@ def _test_inspect_actions_signing():
         name = "inspect_actions_signing.rpm",
         config = "not-a-real-config.yaml",
         deps = [":inspect_actions_signing_dependency"],
-        rpm_signing_key = "//nfpm:rpm_signing_key",
-        rpm_signing_passphrase = "//nfpm:rpm_signing_passphrase",
         tags = ["manual"],
     )
 

@@ -8,13 +8,13 @@ filegroup(
 load("@bazel_skylib//rules:common_settings.bzl", "string_flag")
 
 string_flag(
-    name = "rpm_signing_key",
+    name = "rpm_sign_key",
     build_setting_default = "",
     visibility = ["//visibility:public"],
 )
 
 string_flag(
-    name = "rpm_signing_passphrase",
+    name = "rpm_sign_password",
     build_setting_default = "",
     visibility = ["//visibility:public"],
 )

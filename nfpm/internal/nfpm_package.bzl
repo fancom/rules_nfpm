@@ -19,16 +19,16 @@ def _nfpm_package_impl(ctx):
 
     rpm_key = ""
     rpm_pass = ""
-    if ctx.attr.rpm_signing_key:
-        rpm_key = ctx.attr.rpm_signing_key[BuildSettingInfo].value
-    if ctx.attr.rpm_signing_passphrase:
-        rpm_pass = ctx.attr.rpm_signing_passphrase[BuildSettingInfo].value
+    if ctx.attr._rpm_sign_key:
+        rpm_key = ctx.attr._rpm_sign_key[BuildSettingInfo].value
+    if ctx.attr._rpm_sign_password:
+        rpm_pass = ctx.attr._rpm_sign_password[BuildSettingInfo].value
 
     if bool(rpm_key) != bool(rpm_pass):
-        fail("Both rpm_signing_key and rpm_signing_passphrase must be provided and non-empty for RPM signing.")
+        fail("Both rpm_sign_key and rpm_sign_password must be provided and non-empty for RPM signing.")
     if rpm_key and rpm_pass:
-        nfpm_args.add("--rpm-signing-key", rpm_key)
-        nfpm_args.add("--rpm-signing-passphrase", rpm_pass)
+        nfpm_args.add("--rpm-sign-key", rpm_key)
+        nfpm_args.add("--rpm-sign-password", rpm_pass)
 
     nfpm_files = [
         ctx.file.config,
@@ -61,13 +61,15 @@ nfpm_package = rule(
             allow_files = True,
             doc = "Dependencies for this target. The output path of each dependency will be available in the `.Dependencies` map in the configuration file template, keyed by the dependency's label.",
         ),
-        "rpm_signing_key": attr.label(
+        "_rpm_sign_key": attr.label(
             doc = "Label to a string_flag containing the path to the RPM signing key.",
             providers = [BuildSettingInfo],
+            default = Label("//nfpm:rpm_sign_key"),
         ),
-        "rpm_signing_passphrase": attr.label(
+        "_rpm_sign_password": attr.label(
             doc = "Label to a string_flag containing the passphrase for the RPM signing key.",
             providers = [BuildSettingInfo],
+            default = Label("//nfpm:rpm_sign_password"),
         ),
         "_nfpm": attr.label(
             default = "//go/cmd/nfpmwrapper",
