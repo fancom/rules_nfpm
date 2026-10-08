@@ -47,6 +47,8 @@ def _inspect_actions_test_impl(ctx):
     want_args = [
         "--config",
         "{}/not-a-real-config.yaml".format(ctx.label.package),
+        "--platform",
+        "x86_64",
         "--stable-status",
         "bazel-out/stable-status.txt",
         "--volatile-status",
@@ -98,14 +100,61 @@ def _test_inspect_actions():
         nfpm_package_deps = deps,
     )
 
+def _inspect_actions_signing_test_impl(ctx):
+    env = analysistest.begin(ctx)
+    target_under_test = analysistest.target_under_test(env)
+    actions = analysistest.target_actions(env)
+    
+    asserts.equals(env, 1, len(actions))
+    pkg_action = actions[0]
+    
+    # Check that signing flags are in the arguments
+    got_args = pkg_action.argv
+    asserts.true(env, "--rpm-sign-key" in got_args, "Expected --rpm-sign-key in args")
+    asserts.true(env, "--rpm-sign-password" in got_args, "Expected --rpm-sign-password in args")
+    
+    return analysistest.end(env)
+
+inspect_actions_signing_test = analysistest.make(
+    _inspect_actions_signing_test_impl,
+    config_settings = {
+        str(Label("//nfpm:rpm_sign_key")): "dummy.key",
+        str(Label("//nfpm:rpm_sign_password")): "dummy",
+    },
+)
+
+def _test_inspect_actions_signing():
+    native.genrule(
+        name = "inspect_actions_signing_dependency",
+        srcs = [],
+        outs = ["inspect_actions_signing_test.txt"],
+        cmd = "echo 'hello world' > $@",
+        tags = ["manual"],
+    )
+
+    nfpm_package(
+        name = "inspect_actions_signing.rpm",
+        config = "not-a-real-config.yaml",
+        deps = [":inspect_actions_signing_dependency"],
+        tags = ["manual"],
+    )
+
+    inspect_actions_signing_test(
+        name = "inspect_actions_signing_test",
+        target_under_test = ":inspect_actions_signing.rpm",
+        size = "small",
+    )
+
 def nfpm_package_test_suite(name):
     _test_provider_contents()
     _test_inspect_actions()
+    _test_inspect_actions_signing()
 
     native.test_suite(
         name = name,
         tests = [
             ":provider_contents_test",
             ":inspect_actions_test",
+            ":inspect_actions_signing_test",
         ],
     )
