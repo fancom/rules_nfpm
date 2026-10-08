@@ -64,6 +64,9 @@ type Cmd struct {
 
 	Platform string
 
+	RPMSigningKey        string `name:"rpm-signing-key" type:"existingfile"`
+	RPMSigningPassphrase string `name:"rpm-signing-passphrase"`
+
 	// Output is the desired path for the generated package. The extension is
 	// used to lookup the package format in ExtensionFormatMap.
 	Output string `arg`
@@ -96,6 +99,15 @@ func (c *Cmd) Run() error {
 
 	if err != nil {
 		return errors.Wrapf(err, "error getting package-specific config for format '%s'", packageFormat)
+	}
+
+	if packageFormat == FormatRPM && c.RPMSigningKey != "" {
+		if packageInfo.RPM.Signature.KeyFile != "" {
+			return errors.New("rpm signing key already specified in config file")
+		}
+		packageInfo.RPM.Signature.KeyFile = c.RPMSigningKey
+		// We can directly set the passphrase on the struct
+		packageInfo.RPM.Signature.KeyPassphrase = c.RPMSigningPassphrase
 	}
 
 	packageFile, err := os.Create(c.Output)

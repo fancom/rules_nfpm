@@ -5,3 +5,16 @@ filegroup(
     srcs = glob(["*"]),
     visibility = ["//:__subpackages__"],
 )
+load("@bazel_skylib//rules:common_settings.bzl", "string_flag")
+
+string_flag(
+    name = "rpm_signing_key",
+    build_setting_default = "",
+    visibility = ["//visibility:public"],
+)
+
+string_flag(
+    name = "rpm_signing_passphrase",
+    build_setting_default = "",
+    visibility = ["//visibility:public"],
+)

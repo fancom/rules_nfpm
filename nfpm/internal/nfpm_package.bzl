@@ -1,3 +1,5 @@
+load("@bazel_skylib//rules:common_settings.bzl", "BuildSettingInfo")
+
 def _nfpm_package_impl(ctx):
     package_file = ctx.actions.declare_file(ctx.label.name)
 
@@ -14,6 +16,19 @@ def _nfpm_package_impl(ctx):
     nfpm_args.add("--volatile-status", ctx.version_file)
     nfpm_args.add_all(ctx.files.deps, before_each = "--dep", map_each = _format_dep)
     nfpm_args.add(package_file.path)
+
+    rpm_key = ""
+    rpm_pass = ""
+    if ctx.attr.rpm_signing_key:
+        rpm_key = ctx.attr.rpm_signing_key[BuildSettingInfo].value
+    if ctx.attr.rpm_signing_passphrase:
+        rpm_pass = ctx.attr.rpm_signing_passphrase[BuildSettingInfo].value
+
+    if bool(rpm_key) != bool(rpm_pass):
+        fail("Both rpm_signing_key and rpm_signing_passphrase must be provided and non-empty for RPM signing.")
+    if rpm_key and rpm_pass:
+        nfpm_args.add("--rpm-signing-key", rpm_key)
+        nfpm_args.add("--rpm-signing-passphrase", rpm_pass)
 
     nfpm_files = [
         ctx.file.config,
@@ -45,6 +60,14 @@ nfpm_package = rule(
         "deps": attr.label_list(
             allow_files = True,
             doc = "Dependencies for this target. The output path of each dependency will be available in the `.Dependencies` map in the configuration file template, keyed by the dependency's label.",
+        ),
+        "rpm_signing_key": attr.label(
+            doc = "Label to a string_flag containing the path to the RPM signing key.",
+            providers = [BuildSettingInfo],
+        ),
+        "rpm_signing_passphrase": attr.label(
+            doc = "Label to a string_flag containing the passphrase for the RPM signing key.",
+            providers = [BuildSettingInfo],
         ),
         "_nfpm": attr.label(
             default = "//go/cmd/nfpmwrapper",
