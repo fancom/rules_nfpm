@@ -14,6 +14,9 @@ bzl_library(
         "//nfpm:package-contents",
         "//nfpm/internal:package-contents",
     ],
+    deps = [
+        "@bazel_skylib//rules:common_settings",
+    ],
 )
 
 stardoc(
